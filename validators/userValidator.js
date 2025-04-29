@@ -1,5 +1,5 @@
 // Importando Joi para validações
-const Joi = required("joi");
+const Joi = require("joi");
 
 // Schema de validação para registro de usuário(POST)
 
