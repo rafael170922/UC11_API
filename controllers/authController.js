@@ -4,7 +4,7 @@ const User = require("../models/usuarioModel");
 
 const registerUser = async (req, res, next) => {
     try {
-        const {name, email, password } = req.body
+        const { name, email, password } = req.body
 
         // Busca se existe o usuário no BD
   const userExists = await User.findOne({email: email});
@@ -20,7 +20,7 @@ const registerUser = async (req, res, next) => {
 
   //Criar usuário conforme o Model
   const user = new User({
-    nome,
+    name,
     email,
     password: passwordHash, // Senha criptografada
   });
