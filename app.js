@@ -23,16 +23,37 @@ app.use("/api/users", userRoutes);
 
 app.use(erroHandler);
 
-// Inicia o servidor na porta 3000
-mongoose
-  .connect(`mongodb+srv://${dbUser}:${dbPassword}@api.isusp.mongodb.net/?retryWrites=true&w=majority&appName=API`)
-  .then(() =>{
-    console.log("Conectado ao MongoDB");
+const startServer = async () => {
+  try {
+    await mongoose.connect(
+      `mongodb+srv://${dbUser}:${dbPassword}@api.isusp.mongodb.net/?retryWrites=true&w=majority&appName=API`
+    );
+    console.log("Conectou ao banco (MongoDB")
+
     app.listen(port, () => {
       console.log(`Servidor rodando na porta ${port}`);
     });
-})
-.catch((err) => {
-  console.error("Erro ao conectar ao MongoDB", err);
-  process.exit(1);
-});
+  } catch (err) {
+    console.error("Erro ao conectar ao MongoDB", err);
+    process.exit(1);
+  }
+};
+
+// Inicia o servidor apenas se Não estiver em ambiente de teste.
+if (process.env.NODE_ENV !== "test") {
+  startServer();
+}
+
+// Inicia o servidor na porta 3000
+// mongoose
+//   .connect(`mongodb+srv://${dbUser}:${dbPassword}@api.isusp.mongodb.net/?retryWrites=true&w=majority&appName=API`)
+//   .then(() =>{
+//     console.log("Conectado ao MongoDB");
+//     app.listen(port, () => {
+//       console.log(`Servidor rodando na porta ${port}`);
+//     });
+// })
+// .catch((err) => {
+//   console.error("Erro ao conectar ao MongoDB", err);
+//   process.exit(1);
+// });
