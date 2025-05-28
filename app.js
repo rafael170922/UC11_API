@@ -44,6 +44,8 @@ if (process.env.NODE_ENV !== "test") {
   startServer();
 }
 
+module.exports = app
+
 // Inicia o servidor na porta 3000
 // mongoose
 //   .connect(`mongodb+srv://${dbUser}:${dbPassword}@api.isusp.mongodb.net/?retryWrites=true&w=majority&appName=API`)
