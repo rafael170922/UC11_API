@@ -1,13 +1,15 @@
 module.exports = {
-    testEnvironment: 'node', // Define o ambiente (teste) como Node
-    testMatch: ['**/__tests__/**/*.test.js'], // Arquivos do Jest para executar, terminam com .test.js
-    
-    // Define quais arquivosdevem aparecer no relatório.
+    // Define o ambiente (Teste) como Node
+    testEnvironment: 'node', 
+    // Arquivos do Jest para executar, terminam com .test.js
+    testMatch: ['**/__tests__/**/*.test.js'], 
+
+    // Define quais arquivos devem aparecer no relatório
     collectCoverageFrom: [
         '**/*.js',
         '!**/node_modules/**',
         '!**/coverage/**'
     ],
-    // Define os arquivos de configuração que será executado.
+    // Define o arquivo de configuração que será executado
     setupFilesAfterEnv: ['./__tests__/setup.js']
 }

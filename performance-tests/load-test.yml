@@ -1,0 +1,83 @@
+config:
+  target: "http://localhost:3000" # URL Base do servidor que será testado.
+  phases:
+    - duration: 30 # Duração da fase em segundos.
+      arrivalRate: 2 # Usuário iniciado por segundos no começo da fase.
+      rampTo: 10 # Usuários por segundo no final da fase (rampa).
+      name: "Rampa de carga crescente" # Nome da fase
+    - duration: 60 # Duração da segunda fase.
+      arrivalRate: 10 # Usuários iniciando por segundo na segunda fase.
+      name: "Carga Sustentada" # Nome da fase.
+  defaults:
+    headers:
+      Content-Type: "application/json" # Cabeçalho pardrão para enviar em JSON.
+    timeout: 10000 # Timeout das requisições em milissegundos.
+    response:
+      - statusCode: [200, 201, 400, 401, 404] # Códigos HTTP de respostas válidas.
+      - contentType: json # Tipo de conteúdo esperado na resposta.
+
+
+scenarios:
+  - name: "Fluxo de Autenticação"
+    flow:
+      
+      # Registro de usuário.
+      - post:
+          url: "/api/auth/register" # EndPoint de Registro.
+          json:
+            name: "Test User"
+            email: "test{{ $randomNumber(1, 1000)}}@teste.com" # Email dinamico.
+            password: "password123"
+            confirmPassword: "password123"
+          expect:
+            - statusCode: [400, 201] # Epera código de sucesso ou erro de validação.
+            - contentType: json
+          capture:
+            - json: "$.mgs" # Captura mensagem da resposta.
+              as: "registerMessage"
+      
+      # Login de usuário.
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@teste.com"
+            password: "password123"
+          expect:
+            - statusCode: [200, 401] # Sucesso ou falha de login.
+            - contentType: json
+          capture:
+            - json: "$.token" # Captura token JWT para autenticação futura.
+              as: "authToken"
+
+      # Acesso a rota protegida usando token capturado.
+      - get:
+          url: "/api/users/me" # EndPoint para obter dados do suário logado.
+          headers:
+            Authorization: "Bearer {{ authToken }}" # Token JWT no cabeçalho.
+          expect:
+            - statusCode: [200, 401] # Sucesso ou acesso negado.
+            - contentType: json
+
+  - name: "Teste de carga na Rota Principal"
+    flow:
+      - get:
+          url: "/" # EndPoint Inicial/Raiz.
+          expect:
+            - statusCode: 200 # Resposta esperada.
+            - contentType: json
+            - hasProperty: "msg" # Verifica se o campo "msg" existe.
+
+    # Cenário para testar validações do Backend.
+  - name: "Teste de validação"
+    flow:
+      - post:
+          url: "/api/auth/register" # EndPoint de Registro.
+          json:
+            name: "T" # Nome inválido (muito curto)
+            email: "invalid-email" # Email Invalido.
+            password: "123" # Senha Fraca
+            confirmPassword: "123"
+          expect:
+            - statusCode: 400 # Espera erro de validação.
+            - contentType: json
+            - hasProperty: "errors" # Deve conter campos de erros.
