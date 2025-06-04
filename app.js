@@ -26,9 +26,9 @@ app.use(erroHandler);
 const startServer = async () => {
   try {
     await mongoose.connect(
-      `mongodb+srv://${dbUser}:${dbPassword}@api.isusp.mongodb.net/?retryWrites=true&w=majority&appName=API`
+      `mongodb+srv://${dbUser}:${dbPassword}@cluster0.cp2pd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
     );
-    console.log("Conectou ao banco (MongoDB")
+    console.log("Conectou ao banco MongoDB")
 
     app.listen(port, () => {
       console.log(`Servidor rodando na porta ${port}`);
