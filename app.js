@@ -38,7 +38,7 @@ app.use(errorHandler);
 
 mongoose
     .connect(
-        `mongodb+srv://${dbUser}:${dbPassword}@clusterapi.h93mb.mongodb.net/?retryWrites=true&w=majority&appName=ClusterAPI`
+        `mongodb+srv://${dbUser}:${dbPassword}@cluster0.cp2pd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
     )
     .then(() => {
         console.log("Conectado ao MongoDB");
